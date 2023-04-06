@@ -6,27 +6,27 @@ const {
     Wallet,
 } = require('ethers')
 
-const config = require('config');
-const [ganache, avax, g, biannce] = config.get('chains');
+// const config = require('config');
+// const [ganache, avax, g, biannce] = config.get('chains');
 
-const c = require('./artifacts/contracts/TokenLinker.sol/TokenLinker.json');
+const c = require('../../deployments/testnet/TokenLinker.json');
 
 
-const contract = '0xE77D6A57cb03796fD2536E2cF5955AF6CA1c2616';
+const contract = '0x3d9273fe7bB4F4080f21Bcb1F670A847A56Bdabc';
 
-const IERC20 = require('./artifacts/@axelar-network/axelar-cgp-solidity/contracts/interfaces/IERC20.sol/IERC20.json');
+const IERC20 = require('../../artifacts/@axelar-network/axelar-cgp-solidity/contracts/interfaces/IERC20.sol/IERC20.json');
 const tokenAddr = '0xDE41332a508E363079FD6993B81De049cD362B6D';
 
 // args
 const destChain = 'osmosis-5';
-const destContract = 'osmo1n6j7f3lve2w8h4pjc2xu2l3qe0zmq4z5lpvmdlckswv959zmh7gseww4y4';
-const recipient = 'osmo1hrhv7xa8ejnk0k6e2kyn62fjjslme8tku28j2f';
+const destContract = 'osmo18erv2nlxdxpvvt4chmxztjl3mut333qmpg8qwx7gw9gmjhxtgzcscww8e7';
+const recipient = 'osmo1uaflg8e46wwtvm0td8mkjeaa0d5s53c9eqk4qg';
 const amount = 1000000;
 
 (async () => {
     const wallet = new Wallet(
-        biannce.privateKey,
-        new JsonRpcProvider(biannce.url),
+        "640eda95c742c220925b4650558f0294218f780c426b4b722892f56c3816f4e7",
+        new JsonRpcProvider("https://data-seed-prebsc-1-s2.binance.org:8545"),
     );
     
     const tokenLinker = new Contract(contract, c.abi, wallet);

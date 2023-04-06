@@ -110,7 +110,7 @@ async function query(userClient, contract, queryMsg) {
     return queryResponse;
 }
 
-async function main(contract_name) {
+async function main(/*contract_name*/) {
     // ***************************
     // SETUP INFORMATION FOR USERS
     // ***************************
@@ -138,10 +138,19 @@ async function main(contract_name) {
     // EXECUTE CONTRACT
     // ****************
     // store contract
-    let storeCodeResponse = await store_contract(contract_name);
+    // let storeCodeResponse = await store_contract(contract_name);
+    let storeCodeResponse = await store_contract("token_linker_cosmwasm");
 
     // prepare instantiate message
-    const instantiateMsg = {}
+    const instantiateMsg = {
+        "name": "Cw20 token for test",
+        "symbol": "TCW20",
+        "decimals": 6,
+        "channel": "channel-1946",
+        "original_chain": "binance", // the chain name of the original token deployed on the EVM chain
+        "linker_address": "0x3d9273fe7bB4F4080f21Bcb1F670A847A56Bdabc", // the address of the token linker contract deployed on the EVM chain
+        "axelar_gmp_account": "axelar1dv4u5k73pzqrxlzujxg3qp8kvc3pje7jtdvu72npnt5zhq05ejcsn5qme5", // the axelar gmp account address representation on the Cosmos chain
+    }
     // instantiate contract
     let instantiateResponse = await instantiate(storeCodeResponse.codeId, instantiateMsg);
 
@@ -149,9 +158,10 @@ async function main(contract_name) {
 
 }
 
-const myArgs = process.argv.slice(2);
-if (myArgs.length != 1) {
-    console.log("Usage: node 0_contract_setup.js <wasm_contract_name>");
-    process.exit(1);
-}
-main(myArgs[0]);
+// const myArgs = process.argv.slice(2);
+// if (myArgs.length != 1) {
+//     console.log("Usage: node 0_contract_setup.js <wasm_contract_name>");
+//     process.exit(1);
+// }
+// main(myArgs[0]);
+main();

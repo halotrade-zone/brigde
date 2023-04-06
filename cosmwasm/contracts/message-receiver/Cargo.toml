@@ -1,5 +1,5 @@
 [package]
-name = "message-receiver"
+name = "token-linker-cosmwasm"
 version = "0.1.0"
 authors = ["hoanm <mr.nmh175@gmail.com>"]
 edition = "2021"
@@ -45,6 +45,8 @@ cosmwasm-std = "1.1.3"
 cosmwasm-storage = "1.1.3"
 cw-storage-plus = "1.0.1"
 cw2 = "1.0.1"
+cw20 = "1.0.1"
+cw20-base = { version = "1.0.1", features = ["library"] }
 schemars = "0.8.10"
 serde = { version = "1.0.145", default-features = false, features = ["derive"] }
 thiserror = { version = "1.0.31" }
