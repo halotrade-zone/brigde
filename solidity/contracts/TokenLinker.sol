@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity 0.8.9;
 
 import {AxelarExecutable} from "@axelar-network/axelar-gmp-sdk-solidity/contracts/executable/AxelarExecutable.sol";
 import {IAxelarGateway} from "@axelar-network/axelar-gmp-sdk-solidity/contracts/interfaces/IAxelarGateway.sol";
@@ -19,6 +19,7 @@ contract TokenLinker is AxelarExecutable {
     error GatewayToken();
     error AlreadyRegistered();
     error TransferFromFailed();
+    error TransferFailed();
 
     IAxelarGasService public immutable gasService;
     string public chainName;
@@ -88,8 +89,8 @@ contract TokenLinker is AxelarExecutable {
         );
 
         return
-            abi.encode(
-                bytes32(uint256(1)), // verison number
+            abi.encodePacked(
+                bytes4(0x00000001), // verison number
                 payload
             );
     }
@@ -114,9 +115,21 @@ contract TokenLinker is AxelarExecutable {
 
     function _execute(
         string calldata /*sourceChain*/,
-        string calldata sourceAddress,
+        string calldata /*sourceAddress*/,
         bytes calldata payload
     ) internal override {
-        // implement me to get remote token transfer
+        // TODO: authenticaiton, anyone can call _execute atm
+        (address to, uint256 amount) = abi.decode(payload, (address, uint256));
+        _transfer(to, amount);
+    }
+
+    function _transfer(
+        address to,
+        uint256 amount
+    ) internal {
+        (bool success, bytes memory returnData) = tokenAddress.call(abi.encodeWithSelector(IERC20.transfer.selector, to, amount));
+        bool transferred = success && (returnData.length == uint256(0) || abi.decode(returnData, (bool)));
+
+        if (!transferred || tokenAddress.code.length == 0) revert TransferFailed();
     }
 }

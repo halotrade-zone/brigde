@@ -76,7 +76,7 @@ async function execute(userClient, userAccount, contract, executeMsg, native_amo
             executeMsg,
             "auto",
             memo,
-            [coin(native_amount, native_denom)],
+            [coin(String(native_amount), native_denom)],
         );
     } else {
         executeResponse = await userClient.execute(
@@ -87,7 +87,6 @@ async function execute(userClient, userAccount, contract, executeMsg, native_amo
             memo,
         );
     }
-    
     
     console.log("  transactionHash: ", executeResponse.transactionHash);
     console.log("  gasWanted / gasUsed: ", executeResponse.gasWanted, " / ", executeResponse.gasUsed);
@@ -110,7 +109,7 @@ async function query(userClient, contract, queryMsg) {
     return queryResponse;
 }
 
-async function main(/*contract_name*/) {
+async function main(contract_address, recipient, amount) {
     // ***************************
     // SETUP INFORMATION FOR USERS
     // ***************************
@@ -137,31 +136,21 @@ async function main(/*contract_name*/) {
     // ****************
     // EXECUTE CONTRACT
     // ****************
-    // store contract
-    // let storeCodeResponse = await store_contract(contract_name);
-    let storeCodeResponse = await store_contract("token_linker_cosmwasm");
-
-    // prepare instantiate message
-    const instantiateMsg = {
-        "name": "Cw20 token for test",
-        "symbol": "TCW20",
-        "decimals": 6,
-        "channel": "channel-1946",
-        "original_chain": "binance", // the chain name of the original token deployed on the EVM chain
-        "linker_address": "0x3d9273fe7bB4F4080f21Bcb1F670A847A56Bdabc", // the address of the token linker contract deployed on the EVM chain
-        "axelar_gmp_account": "osmo1ugjmqpgcw6v3kn82g4zc3xf0n9u4zm7qz8p0f6w083254se74umsempjlt", // the axelar gmp account address representation on the Cosmos chain
+    // A user send message
+    console.log("Transfer token ...");
+    let transfer_token_msg = {
+        "transfer": {
+            "recipient": recipient,
+            "amount": amount,
+        }
     }
-    // instantiate contract
-    let instantiateResponse = await instantiate(storeCodeResponse.codeId, instantiateMsg);
-
-    console.log("instantiateResponse: ", instantiateResponse);
-
+    await execute(deployerClient, deployerAccount, contract_address, transfer_token_msg);
 }
 
-// const myArgs = process.argv.slice(2);
-// if (myArgs.length != 1) {
-//     console.log("Usage: node 0_contract_setup.js <wasm_contract_name>");
-//     process.exit(1);
-// }
-// main(myArgs[0]);
-main();
+const myArgs = process.argv.slice(2);
+if (myArgs.length != 3) {
+    console.log("Usage: node 2_send_token.js <contract_address> <recipient> <amount>");
+    return;
+}
+
+main(myArgs[0], myArgs[1], myArgs[2]);
