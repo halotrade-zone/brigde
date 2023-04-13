@@ -139,7 +139,7 @@ async function main(contract_address, recipient, amount) {
     // A user send message
     console.log("Transfer token ...");
     let transfer_token_msg = {
-        "transfer": {
+        "TransferRemote": {
             "recipient": recipient,
             "amount": amount,
         }

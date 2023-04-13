@@ -148,7 +148,7 @@ async function main(/*contract_name*/) {
         "decimals": 6,
         "channel": "channel-1946",
         "original_chain": "binance", // the chain name of the original token deployed on the EVM chain
-        "linker_address": "0x3d9273fe7bB4F4080f21Bcb1F670A847A56Bdabc", // the address of the token linker contract deployed on the EVM chain
+        "linker_address": "0x8f951aaEABDf4b1E5ca0b43844eEC89E23e13Ddd", // the address of the token linker contract deployed on the EVM chain
         "axelar_gmp_account": "osmo1ugjmqpgcw6v3kn82g4zc3xf0n9u4zm7qz8p0f6w083254se74umsempjlt", // the axelar gmp account address representation on the Cosmos chain
     }
     // instantiate contract

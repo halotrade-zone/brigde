@@ -12,14 +12,14 @@ const {
 const c = require('../../deployments/testnet/TokenLinker.json');
 
 
-const contract = '0x3d9273fe7bB4F4080f21Bcb1F670A847A56Bdabc';
+const contract = '0x8f951aaEABDf4b1E5ca0b43844eEC89E23e13Ddd';
 
 const IERC20 = require('../../artifacts/@axelar-network/axelar-cgp-solidity/contracts/interfaces/IERC20.sol/IERC20.json');
 const tokenAddr = '0xDE41332a508E363079FD6993B81De049cD362B6D';
 
 // args
 const destChain = 'osmosis-5';
-const destContract = 'osmo18erv2nlxdxpvvt4chmxztjl3mut333qmpg8qwx7gw9gmjhxtgzcscww8e7';
+const destContract = 'osmo1rs93gp7tw3fkls78xdjz09yll6rtv5eag0chtazl8m2hy37xtjpssd6009';
 const recipient = 'osmo1uaflg8e46wwtvm0td8mkjeaa0d5s53c9eqk4qg';
 const amount = 1000000;
 
