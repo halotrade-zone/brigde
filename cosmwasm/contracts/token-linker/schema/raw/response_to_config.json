@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Config",
+  "type": "object",
+  "required": [
+    "channel",
+    "last_received_message"
+  ],
+  "properties": {
+    "channel": {
+      "type": "string"
+    },
+    "last_received_message": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

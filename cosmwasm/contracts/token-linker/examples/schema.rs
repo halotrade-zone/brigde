@@ -1,6 +1,6 @@
 use cosmwasm_schema::write_api;
 
-use token_linker_cosmwasm::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
+use token_linker::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 
 fn main() {
     write_api! {

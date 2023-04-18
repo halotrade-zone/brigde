@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ConfigMsg",
+  "type": "object",
+  "required": [
+    "last_received_message"
+  ],
+  "properties": {
+    "last_received_message": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

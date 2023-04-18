@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InstantiateMsg",
+  "type": "object",
+  "required": [
+    "axelar_gmp_account",
+    "channel",
+    "linker_address",
+    "original_chain"
+  ],
+  "properties": {
+    "axelar_gmp_account": {
+      "type": "string"
+    },
+    "channel": {
+      "type": "string"
+    },
+    "linker_address": {
+      "type": "string"
+    },
+    "original_chain": {
+      "description": "TODO: support multiple chains",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

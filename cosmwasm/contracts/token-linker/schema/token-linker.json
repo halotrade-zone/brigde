@@ -1,0 +1,111 @@
+{
+  "contract_name": "token-linker",
+  "contract_version": "0.1.0",
+  "idl_version": "1.0.0",
+  "instantiate": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "InstantiateMsg",
+    "type": "object",
+    "required": [
+      "axelar_gmp_account",
+      "channel",
+      "linker_address",
+      "original_chain"
+    ],
+    "properties": {
+      "axelar_gmp_account": {
+        "type": "string"
+      },
+      "channel": {
+        "type": "string"
+      },
+      "linker_address": {
+        "type": "string"
+      },
+      "original_chain": {
+        "description": "TODO: support multiple chains",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false
+  },
+  "execute": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "ExecuteMsg",
+    "oneOf": [
+      {
+        "description": "Send a cross chain message without any tokens",
+        "type": "object",
+        "required": [
+          "execute_from_remote"
+        ],
+        "properties": {
+          "execute_from_remote": {
+            "type": "object",
+            "required": [
+              "payload",
+              "source_address",
+              "source_chain"
+            ],
+            "properties": {
+              "payload": {
+                "$ref": "#/definitions/Binary"
+              },
+              "source_address": {
+                "type": "string"
+              },
+              "source_chain": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    ],
+    "definitions": {
+      "Binary": {
+        "description": "Binary is a wrapper around Vec<u8> to add base64 de/serialization with serde. It also adds some helper methods to help encode inline.\n\nThis is only needed as serde-json-{core,wasm} has a horrible encoding for Vec<u8>. See also <https://github.com/CosmWasm/cosmwasm/blob/main/docs/MESSAGE_TYPES.md>.",
+        "type": "string"
+      }
+    }
+  },
+  "query": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "QueryMsg",
+    "oneOf": [
+      {
+        "type": "object",
+        "required": [
+          "get_config_msg"
+        ],
+        "properties": {
+          "get_config_msg": {
+            "type": "object",
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    ]
+  },
+  "migrate": null,
+  "sudo": null,
+  "responses": {
+    "get_config_msg": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ConfigMsg",
+      "type": "object",
+      "required": [
+        "last_received_message"
+      ],
+      "properties": {
+        "last_received_message": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

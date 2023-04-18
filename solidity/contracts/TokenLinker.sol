@@ -21,10 +21,21 @@ contract TokenLinker is AxelarExecutable {
     error TransferFromFailed();
     error TransferFailed();
 
+    // The gateway contract address and gas receiver contract address should be taken from
+    // https://docs.axelar.dev/resources/testnet#evm-contract-addresses
+    // Ex Gateway on BSC: 
+    // chainName = "binance";
+    // gasService = ethers.constants.AddressZero;
+    // tokenAddress = "0xDE41332a508E363079FD6993B81De049cD362B6D";
     IAxelarGasService public immutable gasService;
     string public chainName;
     address public tokenAddress;
 
+    /// @dev initialize the contract
+    /// @param gateway_ the address of AxelarGateway contract on the source chain. Ex: "0x4D147dCb984e6affEEC47e44293DA442580A3Ec0"
+    /// @param gasReceiver_ the address of AxelarGasService contract on the source chain. Ex: ethers.constants.AddressZero
+    /// @param chainName_ the name of the source chain. Ex: "binance"
+    /// @param tokenAddress_ the address of the ERC20 token to be linked. Ex: "0xDE41332a508E363079FD6993B81De049cD362B6D"
     constructor(
         address gateway_,
         address gasReceiver_,
@@ -36,15 +47,25 @@ contract TokenLinker is AxelarExecutable {
         tokenAddress = tokenAddress_;
     }
 
-    function transferToCosmos(
+    /// @dev transfer token from sender to receiver on destination chain and contract
+    /// @param destinationChain the destination chain name. Ex: "binance"
+    /// @param destinationContract the address of TokenLinker contract deploying on destination chain
+    /// @param recipient the address of receiver on destination chain
+    /// @param amount the amount of token to transfer
+    function TransferToken(
         string calldata destinationChain,
         string calldata destinationContract,
         string calldata recipient,
         uint256 amount
-    ) public payable {
+    ) public payable {  // TODO: removing payable?
+        // transfer token from sender to this contract
         _transferFrom(msg.sender, amount);
 
+        // encode payload to CosmWasm
         bytes memory payload = _encodePayloadToCosmWasm(recipient, amount);
+
+        // call contract on destination chain
+        // the msg.value is the gas fee to pay for the contract call
         _callContract(
             destinationChain,
             destinationContract,
@@ -53,7 +74,11 @@ contract TokenLinker is AxelarExecutable {
         );
     }
 
-    function _transferFrom(address from, uint256 amount) internal {
+    // Transfer token from sender to this contract and handle the error if any
+    function _transferFrom(
+        address from,
+        uint256 amount
+    ) internal {
         (bool success, bytes memory returnData) = tokenAddress.call(
             abi.encodeWithSelector(
                 IERC20.transferFrom.selector,
@@ -69,6 +94,8 @@ contract TokenLinker is AxelarExecutable {
             revert TransferFromFailed();
     }
 
+    /// @dev encode payload to CosmWasm
+    /// @dev the payload includes the execute message name on the destination contract, its arguments and their types
     function _encodePayloadToCosmWasm(
         string calldata destinationAddress,
         uint256 amount
@@ -90,7 +117,7 @@ contract TokenLinker is AxelarExecutable {
 
         return
             abi.encodePacked(
-                bytes4(0x00000001), // verison number
+                bytes4(0x00000001), // verison number. IMPORTANT!
                 payload
             );
     }
@@ -113,23 +140,23 @@ contract TokenLinker is AxelarExecutable {
         gateway.callContract(destinationChain, destinationAddress, payload);
     }
 
-    function _execute(
-        string calldata /*sourceChain*/,
-        string calldata /*sourceAddress*/,
-        bytes calldata payload
-    ) internal override {
-        // TODO: authenticaiton, anyone can call _execute atm
-        (address to, uint256 amount) = abi.decode(payload, (address, uint256));
-        _transfer(to, amount);
-    }
+    // function _execute(
+    //     string calldata /*sourceChain*/,
+    //     string calldata /*sourceAddress*/,
+    //     bytes calldata payload
+    // ) internal override {
+    //     // TODO: authenticaiton, anyone can call _execute atm
+    //     (address to, uint256 amount) = abi.decode(payload, (address, uint256));
+    //     _transfer(to, amount);
+    // }
 
-    function _transfer(
-        address to,
-        uint256 amount
-    ) internal {
-        (bool success, bytes memory returnData) = tokenAddress.call(abi.encodeWithSelector(IERC20.transfer.selector, to, amount));
-        bool transferred = success && (returnData.length == uint256(0) || abi.decode(returnData, (bool)));
+    // function _transfer(
+    //     address to,
+    //     uint256 amount
+    // ) internal {
+    //     (bool success, bytes memory returnData) = tokenAddress.call(abi.encodeWithSelector(IERC20.transfer.selector, to, amount));
+    //     bool transferred = success && (returnData.length == uint256(0) || abi.decode(returnData, (bool)));
 
-        if (!transferred || tokenAddress.code.length == 0) revert TransferFailed();
-    }
+    //     if (!transferred || tokenAddress.code.length == 0) revert TransferFailed();
+    // }
 }
