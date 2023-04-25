@@ -80,7 +80,7 @@ async function execute(userClient, userAccount, contract, executeMsg, native_amo
         );
     } else {
         executeResponse = await userClient.execute(
-            userAccount.address,                               
+            userAccount.address,
             contract,
             executeMsg,
             "auto",
@@ -137,20 +137,16 @@ async function main(contract_address) {
     // EXECUTE CONTRACT
     // ****************
     // A user send message
-    console.log("Sending token ...");
-    let send_token_msg = {
-        "transfer_remote": {
-            "destination_chain": "binance",
-            "destination_address": "0x3552C6ff4a091ED6f51dF52fcD3e6e7682C57fCF",
-            "amount": "1000000",
-        }
+    console.log("Sending message ...");
+    let query_config_msg = {
+        "config_msg": {}
     }
-    await execute(deployerClient, deployerAccount, contract_address, send_token_msg, 1);
+    await query(deployerClient, contract_address, query_config_msg);
 }
 
 const myArgs = process.argv.slice(2);
-if (myArgs.length != 1) {
-    console.log("Usage: node 1_send_token.js <contract_address>");
+if (myArgs.length != 2) {
+    console.log("Usage: node 1_query_last_message.js <contract_address>");
     return;
 }
 
